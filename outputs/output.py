@@ -41,6 +41,7 @@ def render_barplot(df, path):
         ax.text(p.get_x(), height+2, '%1.2f' % (height) )
 
     plt.ylabel('mean(current), mA')
+    plt.xlabel('log names')
     plt.subplots_adjust(bottom=0.40)
     #plt.legend()
     logging.info('Saving plot to %s/barplot.png', path) 
