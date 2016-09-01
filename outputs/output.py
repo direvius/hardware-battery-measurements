@@ -8,33 +8,27 @@ import argparse
 #%matplotlib inline
 
 def input_files_to_df(files, suffix, delimiter):
-    work_dict = {}
+    work_df = None
 
-    #read csv to df
     for work_file in files:
         filename = work_file.split('/')[-1]
-        work_dict[filename] = pd.read_csv(work_file, delimiter=delimiter, names="ts curr".split())
-        work_dict[filename]['ts'] = pd.to_datetime(work_dict[filename]['ts'],unit='s')
+        if work_df is None:
+            work_df = pd.read_csv(work_file, delimiter=delimiter, names="ts curr".split())
+            work_df['label'] = '{name}_{suffix}'.format(name=filename, suffix=suffix)
+        else:
+            df = pd.read_csv(work_file, delimiter=delimiter, names="ts curr".split())
+            df['label'] = '{name}_{suffix}'.format(name=filename, suffix=suffix)
+            work_df = work_df.append(df)
 
-    #make sorted dict of dataframes
-    work_dict_sorted = collections.OrderedDict(sorted(work_dict.iteritems()))
-    solid_df = None
-    #add label to each dataframe
-    for key, df in work_dict_sorted.iteritems():
-        df['label'] = "{key}_{suff}".format(
-            key=key,
-            suff=suffix
-        )
+    #convert unixtimestamp to datetime/s
+    work_df['ts'] = pd.to_datetime(work_df['ts'],unit='s')
 
-        #drop NaN
+    #drop NaN and drop label column
+    for key, df in work_df.groupby('label'):
+        df.drop('label', axis=1, inplace=True)
         df.dropna()
 
-        #consolidate dict -> dataframe
-        if solid_df is None:
-            solid_df = df
-        else:
-            solid_df = solid_df.append(df)
-    return solid_df
+    return work_df
 
 def main():
     logging.basicConfig(level=logging.DEBUG)
@@ -47,11 +41,13 @@ def main():
     args = parser.parse_args()
 
     try:
-        logging.debug("Start output generation")
+        logging.debug("Started output generation")
         logging.info("Input files: %s", args.files)
 
         df = input_files_to_df(args.files, args.suffix, args.delimiter)
+
         #barplot
+        logging.info("Started rendering plot")
         sns.set(font_scale=1, rc={"figure.figsize": (10, 5)})
         ax = sns.barplot(x=df.label, y=df.curr)
 
