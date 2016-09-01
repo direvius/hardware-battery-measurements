@@ -31,13 +31,18 @@ def input_files_to_df(files, suffix, delimiter):
 
 def render_barplot(df, path):
     logging.info("Started rendering barplot")
-    sns.set(font_scale=1, rc={"figure.figsize": (10, 5)})
-    ax = sns.barplot(x=df.label, y=df.curr)
+    sns.set(font_scale=1, rc={"figure.figsize": (12, 8)})
+    ax = sns.barplot(x=df.label, y=df.curr, ci=None)
+    for t in ax.get_xticklabels():
+        t.set(rotation='vertical')
+
     for p in ax.patches:
         height = p.get_height()
         ax.text(p.get_x(), height+2, '%1.2f' % (height) )
 
     plt.ylabel('mean(current), mA')
+    plt.subplots_adjust(bottom=0.40)
+    #plt.legend()
     logging.info('Saving plot to %s/barplot.png', path) 
     plt.savefig(path+'/barplot.png')
 
