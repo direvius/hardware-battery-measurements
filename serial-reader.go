@@ -40,7 +40,6 @@ func main() {
     scanner := bufio.NewScanner(s)
     for i := 0; scanner.Scan() && i < *skip + *nsamples; i++ {
         if i < *skip {
-            fmt.Println("skip")
             continue
         }
         fmt.Printf("%.6f %s\n", float64(time.Now().UnixNano())/1e9, scanner.Text())
