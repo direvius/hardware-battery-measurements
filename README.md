@@ -5,16 +5,8 @@
 1. Скомпилить.  
 2. Подключить arduino к USB порту  
 3. Запустить serial-reader. 
-
-    
-Usage of serial-reader:  
-  -device string  
-        USB device file (default "/dev/cu.wchusbserial1410")  
-  -samples int  
-        number of samples to acquire (default 30000)  
-  -skip int  
-        number of samples to skip (workaround to avoid dirty buffer) (default 500)  
   
+help почитать так: serial-reader --help
   
 $ serial-reader -device /dev/cu.wchusbserial1420 -samples 900000  
  1472476706.982795 1435.55  
