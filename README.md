@@ -2,11 +2,21 @@
 Измерение потребления батарейки телефоном - arduino-way.  
   
 Как использовать:  
-1. Поправить сорцы, чтобы использовался верный порт USB.  
-2. Скомпилить.  
-3. Запустить.  
+1. Скомпилить.  
+2. Подключить arduino к USB порту  
+3. Запустить serial-reader. 
+
+    
+Usage of serial-reader:  
+  -device string  
+        USB device file (default "/dev/cu.wchusbserial1410")  
+  -samples int  
+        number of samples to acquire (default 30000)  
+  -skip int  
+        number of samples to skip (workaround to avoid dirty buffer) (default 500)  
   
-$ go run ../../ser.go  
+  
+$ serial-reader -device /dev/cu.wchusbserial1420 -samples 900000  
  1472476706.982795 1435.55  
  1472476706.982903 1040.04  
  1472476706.982911 908.20  
@@ -14,6 +24,3 @@ $ go run ../../ser.go
  1472476706.991034 869.14  
  1472476706.991091 1113.28  
  1472476706.991102 1059.57  
-  
-Известные проблемы:  
-1. Буферизуется вывод/попадает мусор в начало лога. В исходниках есть грязных хак, но он помогает не в 100% случаев - нужно либо более хитро фильтровать, либо увеличивать буфер хака.  
