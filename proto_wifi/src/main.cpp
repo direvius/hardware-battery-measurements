@@ -1,5 +1,23 @@
+/*
+
+Gather ADC data over wifi/udp
+
+Connect to WiFi, then send commands over udp.
+
+To subscribe, send udp packet with 'SUBS' command:
+echo -n "SUBS" | nc -w1 -4u 192.168.4.1 2390
+
+Listen for data on UDP/2390:
+nc -ul 2390 > test.tsv
+
+To stop, send 'STOP':
+echo -n "STOP" | nc -w1 -4u 192.168.4.1 2390
+
+Some debug info is in serial console:
+picocom /dev/tty.SLAB_USBtoUART -b 9600
+*/
+
 #include <Wire.h>
-//#include <Adafruit_ADS1015.h>
 
 #include "ADS1115.h"
 #include "I2Cdev.h"
