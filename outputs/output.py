@@ -47,6 +47,32 @@ def render_barplot(df, path):
     logging.info('Saving plot to %s/barplot.png', path) 
     plt.savefig(path+'/barplot.png')
 
+def render_lmplot(df, path):
+    logging.info("Started rendering lmplot")
+
+    #plot settings
+    fig, ax = sns.plt.subplots()
+    fig.set_size_inches(12,8)
+    sns.set_style("darkgrid", {"axes.facecolor": ".9"})
+
+    logging.info('Calculating plot data')
+    mean = df.groupby("ts").mean()
+    #rolling = df.groupby("ts")[["curr"]].rolling(window=50).mean().dropna()
+    cummulative = mean.sum()
+    logging.info('Cummulative summ for test: %s', cummulative['curr'])
+    logging.info('Rendering plots')
+    mean.plot(ax=ax)
+    #cummulative.plot(ax=ax, c="b")
+    #rolling.plot(ax=ax)
+
+    plt.ylabel('current, mA')
+    plt.xlabel('time')
+    plt.legend(
+        (cummulative),scatterpoints=1, loc='upper right',
+    )
+    logging.info('Saving plot to %s/lmplot.png', path)
+    plt.savefig(path+'/lmplot.png')
+
 def main():
     logging.basicConfig(level=logging.DEBUG)
 
@@ -55,7 +81,7 @@ def main():
     parser.add_argument('--delimiter', type=str, help='Common delimiter for CSV', default=' ')
     parser.add_argument('files', type=str, nargs='+', help='Input files')
     parser.add_argument('--to-dir', default='.')
-    parser.add_argument('--plot', default='barplot')
+    parser.add_argument('--plot', default=False)
     args = parser.parse_args()
 
     try:
@@ -68,6 +94,8 @@ def main():
 
         if args.plot == 'barplot':
             render_barplot(df, args.to_dir)
+        if args.plot == 'lmplot':
+            render_lmplot(df, args.to_dir)
     except Exception as exc:
         logging.error("Failed output generation: %s", exc, exc_info=True)
     else:
